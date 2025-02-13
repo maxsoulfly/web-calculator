@@ -1,5 +1,7 @@
 # Web Calculator
 
+**Note: This project is still under construction.**
+
 This project is a web-based calculator built using JavaScript, HTML, and CSS. The calculator provides a simple and intuitive interface for performing basic arithmetic operations such as addition, subtraction, multiplication, and division.
 
 ## Features
