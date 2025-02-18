@@ -7,6 +7,8 @@ let number2 = ''; // Second number
 let operator = ''; // Operator
 let result = ''; // This will store the answer
 
+let errorFlag = false;
+
 
 // Function to add two numbers
 const add = (num1, num2) => {
@@ -33,7 +35,11 @@ const multiply = (num1, num2) => {
 const divide = (num1, num2) => {
     num1 = parseInt(num1);
     num2 = parseInt(num2);
-    if (num2 == 0) return "ERROR: Cannot divide by zero";
+    if (num2 == 0) {
+        
+        errorFlag = true;
+        return "WTF you're trying to do?";
+    }
     return num1 / num2;
 }
 
@@ -43,17 +49,23 @@ const square = (num) => {
 }
 
 // Function to operate on two numbers with an operator
-const operate = (num1, num2='', operator='') => {
-    if (operator == 'add') return add(num1, num2);
-    else if (operator == 'square') {
-        console.log("Trying square");
-        return square(num1);
+const operate = () => {
+    // console.log("🚀 ~ operate ~ num1, num2, operator:", num1, num2, operator);
+    if (operator == 'add') return add(number1, number2);
+    else if (operator == 'subtract') return subtract(number1, number2);
+    else if (operator == 'multiply') return multiply(number1, number2);
+    else if (operator == 'divide') return divide(number1, number2);
+    else if (operator == 'square') return square(number1);
+    else {
+        errorFlag = true;
+        return "ERROR: Wrong operation";
     }
-    else if (operator == 'subtract') return subtract(num1, num2);
-    else if (operator == 'multiply') return multiply(num1, num2);
-    else if (operator == 'divide') return divide(num1, num2);
-    else return "ERROR: Wrong operation";
 }
+
+const isFloat = (value) => {
+    return typeof value === "number";
+}
+
 
 const init = () => {
     // Initialize number buttons
@@ -62,24 +74,20 @@ const init = () => {
     numberButtons.forEach(numberButton => {
         numberButton.addEventListener('click', () => {
 
-            // Clear display if there's an error
-            if (    (typeof number1 === "string") && (number1.includes('ERROR')) 
-                ||  (typeof number2 === "string") && (number2.includes('ERROR')) 
-                ||  (typeof result === "string") && (result.includes('NaN')) 
-                ||  (typeof result === "string") && (result.includes('ERROR'))) {
-                console.log("Clearing Error");
-                clearDisplay();
-            };
-
-            // Append number to the appropriate variable
-            if (operator == '') {
-                number1 += numberButton.textContent;
-                display.textContent = number1;
-            } else {
-                number2 += numberButton.textContent;
-                display.textContent = number2;
+            if (!errorFlag) {
+                // Append number to the appropriate variable
+                if (operator == '') {
+                    number1 += numberButton.textContent;
+                    display.textContent = number1;
+                } else {
+                    number2 += numberButton.textContent;
+                    display.textContent = number2;
+                }
+                helperDisplayVariables();
             }
-            helperDisplayVariables();
+            else {
+                clearDisplay();
+            }
         });
 
         return numberButton;
@@ -90,27 +98,43 @@ const init = () => {
 
     operators.forEach(operatorButton => {
         operatorButton.addEventListener('click', () => {
-            // Perform operation if equals is clicked
-            if (operatorButton.id === 'equals') {
-                result = operate(number1, number2, operator);
-                displayOperator(operatorButton.id);
-                if ((typeof value === "string") && (result.includes('ERROR'))) displayError();
-                // set the app for next operation
-                number1 = result;
-                number2 = '';
-            } else if(operatorButton.id === 'square') {
-                operator = operatorButton.id;
-                result = operate(number1, number2, operator);
-                displayOperator(operatorButton.id);
-                // set the app for next operation
-                number1 = result;
-                number2 = '';
-            } else {
-                operator = operatorButton.id;
-                displayOperator(operator);
+            if (operatorButton.id === 'clear-entry' || 
+                operatorButton.id === 'clear'){
+                clearDisplay();
             }
+            else if (!errorFlag) {
+                // Perform operation if equals is clicked
+                if (operatorButton.id === 'equals') {
 
-            helperDisplayVariables();
+                    result = operate();
+                    activateOperator(operatorButton.id);
+                    displayResult();
+                    
+                    // if was error
+                    if (!isFloat(result)) displayError();
+
+                    // set the app for next operation
+                    number1 = result;
+                    number2 = '';
+
+                } else if(operatorButton.id === 'square') {
+
+                    operator = operatorButton.id;
+                    result = operate();
+                    activateOperator(operator);
+                    displayResult();
+
+                    // set the app for next operation
+                    number1 = result;
+                    number2 = '';
+
+                } else {
+                    operator = operatorButton.id;
+                    activateOperator(operator);
+                }
+
+                helperDisplayVariables();
+            }
         });
 
         return operatorButton;
@@ -122,29 +146,31 @@ const displayError = () => {
     display.classList.add('error');
 }
 
-// Display the operator or result
-const displayOperator = (operatorID) => {
-    switch (operatorID) {
-        case 'equals':
-            display.textContent = result;
-            break;
-            
-        case 'divide':
-        case 'multiply':
-        case 'subtract':
-        case 'add':
-            display.textContent = document.getElementById(operatorID).textContent;
-            break;
-        case 'square':
 
-            display.textContent = result;
-            break;
-        case 'clear':
-            clearDisplay();
-            break;
-        default:
-            break;
-    }
+const clearError = () => {
+    number1 = '';
+    number2 = '';
+    operator = '';
+    result = '';
+
+    errorFlag = false;
+    display.textContent = '0';
+    display.classList = '';
+}
+
+const displayResult = () => {
+    display.textContent = result;
+}
+
+const activateOperator = (operatorID) => {
+    clearActiveOperators();
+    const operatorButton = document.getElementById(operatorID);
+    operatorButton.classList.toggle('active');
+}
+
+const clearActiveOperators = () => {
+    const allOperators = document.querySelectorAll('.operator');
+    allOperators.forEach(operator=>operator.classList.remove('active'));
 }
 
 // Clear the display and reset variables
@@ -156,17 +182,14 @@ const clearDisplay = () => {
 
     display.textContent = '0';
     display.classList = '';
+    clearError();
+    clearActiveOperators();
 }
+
 
 // Clear the last entry
 const clearEntry = () => {
-    if (number1 != '' && number2 == '') {
-        number1 = '';
-    } else {
-        number2 = '';
-    }
-
-    display.textContent = '0';
+    clearError();
 }
 
 // Helper function to log variables

@@ -46,6 +46,10 @@ button.operator:hover {
     background-color: #ffb74d;
 }
 
+button.operator.active {
+    background-color: #ff9800;
+}
+
 button#equals {
     background-color: #4caf50;
     color: #fff;
@@ -70,6 +74,7 @@ input[type="text"] {
     border-radius: 4px;
 }
 #display {
+    font-family: "Agency FB", monospace;
     display: block;
     background-color: #e0f7fa; /* Softer color */
     text-align: right;
@@ -79,6 +84,7 @@ input[type="text"] {
     border: 2px solid #7a7a7a; /* Unified border style */
     border-radius: 5px; /* Rounded corners for a modern look */
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    overflow-x: hidden;
     
     width: 75%;
 }
