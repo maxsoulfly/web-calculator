@@ -12,29 +12,29 @@ let errorFlag = false;
 
 // Function to add two numbers
 const add = (num1, num2) => {
-    num1 = parseInt(num1);
-    num2 = parseInt(num2);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
     return num1 + num2;
 }
 
 // Function to subtract the second number from the first
 const subtract = (num1, num2) => {
-    num1 = parseInt(num1);
-    num2 = parseInt(num2);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
     return num1 - num2;
 }
 
 // Function to multiply two numbers
 const multiply = (num1, num2) => {
-    num1 = parseInt(num1);
-    num2 = parseInt(num2);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
     return num1 * num2;
 }
 
 // Function to divide the first number by the second
 const divide = (num1, num2) => {
-    num1 = parseInt(num1);
-    num2 = parseInt(num2);
+    num1 = parseFloat(num1);
+    num2 = parseFloat(num2);
     if (num2 == 0) {
         
         errorFlag = true;
@@ -44,8 +44,14 @@ const divide = (num1, num2) => {
 }
 
 const square = (num) => {
-    num = parseInt(num);
+    num = parseFloat(num);
     return num * num;
+}
+
+const squareRoot = (num) => {
+    num = parseFloat(num);
+
+    return Math.sqrt(num);
 }
 
 // Function to operate on two numbers with an operator
@@ -56,6 +62,7 @@ const operate = () => {
     else if (operator == 'multiply') return multiply(number1, number2);
     else if (operator == 'divide') return divide(number1, number2);
     else if (operator == 'square') return square(number1);
+    else if (operator == 'square-root') return squareRoot(number1);
     else {
         errorFlag = true;
         return "ERROR: Wrong operation";
@@ -104,22 +111,26 @@ const init = () => {
                 if (operatorButton.id === 'equals') {
 
                     result = operate();
-                    
-                    // if was error
-                    if (!isFloat(result)) displayError();
-
                     displayResult();
 
-                } else if(operatorButton.id === 'square') {
+
+                } else if(operatorButton.id === 'square' || 
+                        operatorButton.id === 'square-root')   {
 
                     operator = operatorButton.id;
                     result = operate();
-                    
+
                     activateOperator(operator);
                     displayResult();
 
                 } else {
-                    operator = operatorButton.id;
+                    if (operator === ''){
+                        operator = operatorButton.id;
+                    } else { // there's a chain of operations
+                        result = operate();
+                        displayResult();
+                    }
+                    
                     activateOperator(operator);
                 }
 
@@ -149,8 +160,13 @@ const clearError = () => {
 }
 
 const displayResult = () => {
+    
     clearActiveOperators();
-    display.textContent = result;
+
+    // if was error
+    if (!isFloat(result)) displayError();
+
+    display.textContent = result; 
 
     // set the app for next operation
     number1 = result;
