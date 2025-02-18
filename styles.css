@@ -8,11 +8,14 @@ body {
 .container {
     width: 100%;
     max-width: 500px;
+    min-width: 300px;
     margin: 50px auto;
     background: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
 }
+
 
 h1 {
     text-align: center;
