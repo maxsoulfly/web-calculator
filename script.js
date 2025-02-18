@@ -85,9 +85,6 @@ const init = () => {
                 }
                 helperDisplayVariables();
             }
-            else {
-                clearDisplay();
-            }
         });
 
         return numberButton;
@@ -107,26 +104,19 @@ const init = () => {
                 if (operatorButton.id === 'equals') {
 
                     result = operate();
-                    activateOperator(operatorButton.id);
-                    displayResult();
                     
                     // if was error
                     if (!isFloat(result)) displayError();
 
-                    // set the app for next operation
-                    number1 = result;
-                    number2 = '';
+                    displayResult();
 
                 } else if(operatorButton.id === 'square') {
 
                     operator = operatorButton.id;
                     result = operate();
+                    
                     activateOperator(operator);
                     displayResult();
-
-                    // set the app for next operation
-                    number1 = result;
-                    number2 = '';
 
                 } else {
                     operator = operatorButton.id;
@@ -159,7 +149,12 @@ const clearError = () => {
 }
 
 const displayResult = () => {
+    clearActiveOperators();
     display.textContent = result;
+
+    // set the app for next operation
+    number1 = result;
+    number2 = '';
 }
 
 const activateOperator = (operatorID) => {
