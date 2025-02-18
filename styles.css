@@ -74,7 +74,7 @@ input[type="text"] {
     background-color: #e0f7fa; /* Softer color */
     text-align: right;
     padding: 15px;
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin: 20px 15px; /* Adjusted margin for better spacing */
     border: 2px solid #7a7a7a; /* Unified border style */
     border-radius: 5px; /* Rounded corners for a modern look */
@@ -83,8 +83,10 @@ input[type="text"] {
     width: 75%;
 }
 
-#display p {
-    margin: 0;
+#display.error {
+    /* font-size: 1.5rem; */
+    text-align: left;
+    color: red;
 }
 
 #buttons {
