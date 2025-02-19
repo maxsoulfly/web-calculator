@@ -7,9 +7,11 @@ const debugMode = true; // Enable or disable debug mode
 
 let number1 = ""; // First number
 let number2 = ""; // Second number
-let operator = ""; // Operator
+let operator = ""; // Operator for two-number operations
+let singleOperator = ""; // Operator for single-number operations
 let result = ""; // This will store the answer
 
+let singleOperatorFlag = false; // Flag to indicate if a single operator is in use
 let errorFlag = false; // Flag to indicate if there is an error
 let decimalPointFlag = false; // Flag to indicate if a decimal point has been used
 let number1FocusFlag = true; // Flag to indicate if the first number is in focus
@@ -59,18 +61,20 @@ const squareRoot = (num) => {
     return Math.sqrt(num);
 };
 
+// Function to calculate the reciprocal of a number
 const reciprocal = (num) => {
     num = parseFloat(num);
     return 1 / num;
 };
 
+// Function to negate a number
 const negative = (num) => {
     num = parseFloat(num);
     return -num;
 };
 
 // Function to operate on two numbers with an operator
-const operate = () => {
+const operate = (operator) => {
     if (number1 === "") number1 = 0; // If the first number is empty, set it to 0
     if (number2 === "") number2 = 0; // If the second number is empty, set it to 0
 
@@ -87,15 +91,38 @@ const operate = () => {
     }
 };
 
-const switchNumberFocus = () => {
+// Function to toggle focus between number1 and number2
+const toggleFocus = () => {
     number1FocusFlag = !number1FocusFlag;
     number2FocusFlag = !number2FocusFlag;
-    decimalPointFlag = false;
+    toggledecimalPoint(); // Toggle decimal point
+    toggleSingleOperators(); // Toggle single number operators
 };
 
+// Function to reset focus to number1
 const resetFocus = () => {
     number1FocusFlag = true;
     number2FocusFlag = false;
+};
+
+// Function to toggle single number operators
+const toggleSingleOperators = () => {
+    singleOperatorFlag = !singleOperatorFlag;
+};
+
+// Function to toggle single number operators
+const resetSingleOperators = () => {
+    singleOperatorFlag = false;
+};
+
+// Function to toggle decimal point button
+const toggledecimalPoint = () => {
+    decimalPointFlag = !decimalPointFlag;
+};
+
+// Function to toggle decimal point button
+const resetdecimalPoint = () => {
+    decimalPointFlag = false;
 };
 
 // Function to check if a value is a float
@@ -103,21 +130,23 @@ const isFloat = (value) => {
     return typeof value === "number";
 };
 
-const appendToNumber = (number, value) => {
-    if (value === ".") {
+// Function to append a number or decimal point to the current number
+const appendToNumber = (number, button) => {
+    if (button.textContent === ".") {
         if (!decimalPointFlag) {
             // Check if a decimal point has been used
-            number += value;
-            decimalPointFlag = true;
+            number += button.textContent;
+            toggledecimalPoint(); // Toggle decimal point
         }
     } else {
         // Append number to the first number
-        number += value;
+        number += button.textContent;
         display.textContent = number;
     }
     return number;
 };
 
+// Function to handle the equals button click
 const handleEquals = () => {
     if (
         (number1FocusFlag && number1 === "") ||
@@ -126,10 +155,23 @@ const handleEquals = () => {
         if (number1 === "") display.textContent = 0;
         else display.textContent = number1;
     } else {
-        result = operate();
+        result = operate(operator);
         displayResult(); // Display the result
-        switchNumberFocus(); // Switch focus to the second number
+        toggleFocus(); // Switch focus to the second number
     }
+};
+
+// Function to handle operator button click
+const handleOperatorClick = (operatorId) => {
+    if (operator === "") {
+        operator = operatorId;
+    } else {
+        result = operate(operator);
+        displayResult(); // Display the result
+    }
+    toggleFocus(); // Switch focus to the second number
+    resetdecimalPoint();
+    activateOperator(operator); // Highlight the operator button
 };
 
 // Function to initialize the calculator
@@ -142,9 +184,9 @@ const init = () => {
             if (!errorFlag) {
                 // Append number to the appropriate variable
                 if (number1FocusFlag) {
-                    number1 = appendToNumber(number1, numberButton.textContent);
+                    number1 = appendToNumber(number1, numberButton);
                 } else if (number2FocusFlag) {
-                    number2 = appendToNumber(number2, numberButton.textContent);
+                    number2 = appendToNumber(number2, numberButton);
                 }
 
                 helperDisplayVariables(); // Log variables for debugging
@@ -165,30 +207,33 @@ const init = () => {
             } else if (!errorFlag) {
                 if (operatorButton.id === "equals") {
                     handleEquals();
-                } else if (
-                    singleNumberOperations.includes(operatorButton.id) &&
-                    number1FocusFlag
-                ) {
-                    // Handle single number operations
-                    operator = operatorButton.id;
-                    result = operate();
-                    activateOperator(operator); // Highlight the operator button
-                    displayResult(); // Display the result
                 } else {
-                    if (operator === "") {
-                        operator = operatorButton.id;
-                    } else {
-                        result = operate();
-                        displayResult(); // Display the result
-                    }
-                    switchNumberFocus(); // Switch focus to the second number
-                    activateOperator(operator); // Highlight the operator button
+                    handleOperatorClick(operatorButton.id);
                 }
                 helperDisplayVariables(); // Log variables for debugging
             }
         });
     });
 
+    // Initialize single operator buttons
+    const singleOperators = document.querySelectorAll(".single-operator");
+    singleOperators.forEach((operatorButton) => {
+        operatorButton.addEventListener("click", () => {
+            if (debugMode) console.log("operatorButton.id", operatorButton.id); // debug mode
+
+            if (
+                singleNumberOperations.includes(operatorButton.id) &&
+                number1FocusFlag
+            ) {
+                // Handle single number operations
+                singleOperator = operatorButton.id;
+                result = operate(singleOperator);
+                displayResult(); // Display the result
+            }
+        });
+    });
+
+    // Initialize negative button
     const negativeButton = document.getElementById("negative");
 
     negativeButton.addEventListener("click", () => {
@@ -212,18 +257,8 @@ const displayError = () => {
 
 // Function to clear error and reset variables
 const clearError = () => {
-    number1 = "";
-    number2 = "";
-    operator = "";
-    result = "";
-
-    resetFocus(); // Reset focus to the first number
-
     errorFlag = false; // Reset error flag
-    decimalPointFlag = false; // Reset decimal point flag
-
-    display.textContent = "0";
-    display.classList = "";
+    display.classList.remove("error");
 };
 
 // Function to display the result
@@ -237,6 +272,7 @@ const displayResult = () => {
     operator = "";
 };
 
+// Function to refresh the display with the current number
 const refreshDisplay = (number) => {
     display.textContent = number;
 };
@@ -259,11 +295,17 @@ const clearDisplay = () => {
     number1 = "";
     number2 = "";
     operator = "";
+    singleOperator = "";
     result = "";
     display.textContent = "0";
     display.classList = "";
+
     clearError(); // Clear error
     clearActiveOperators(); // Clear active operator buttons
+
+    resetFocus(); // Reset focus to the first number
+    resetdecimalPoint(); // Reset decimal point
+    resetSingleOperators(); // Reset single number operators
 };
 
 // Function to clear the last entry

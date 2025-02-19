@@ -51,12 +51,12 @@ button.operator.active {
     background-color: #ff9800;
 }
 
-button.single-number-operator {
-    background-color: #bab9b9;
+button.single-operator {
+    background-color: #90caf9;
 }
 
-button.single-number-operator:hover {
-    background-color: #d0d0d0;
+button.single-operator:hover {
+    background-color: #64b5f6;
 }
 
 
@@ -118,4 +118,13 @@ input[type="text"] {
     display  : flex;
     flex-wrap: wrap;
     padding  : 15px;
+}
+
+.disabled-button {
+    background-color: #ccc;
+    color           : #666;
+    cursor          : not-allowed;
+    pointer-events  : none;
+    /* Prevent clicks */
+    opacity         : 0.6;
 }
