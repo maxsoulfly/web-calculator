@@ -1,5 +1,7 @@
 const display = document.querySelector("#display"); // Get the display element
 
+const singleNumberOperations = ["square", "square-root", "reciprocal"]; // Single number operations
+
 const debugMode = true; // Enable or disable debug mode
 
 let number1 = ""; // First number
@@ -90,6 +92,11 @@ const switchNumberFocus = () => {
     decimalPointFlag = false;
 };
 
+const resetFocus = () => {
+    number1FocusFlag = true;
+    number2FocusFlag = false;
+};
+
 // Function to check if a value is a float
 const isFloat = (value) => {
     return typeof value === "number";
@@ -108,6 +115,20 @@ const appendToNumber = (number, value) => {
         display.textContent = number;
     }
     return number;
+};
+
+const handleEquals = () => {
+    if (
+        (number1FocusFlag && number1 === "") ||
+        (number1FocusFlag && number2 === "")
+    ) {
+        if (number1 === "") display.textContent = 0;
+        else display.textContent = number1;
+    } else {
+        result = operate();
+        displayResult(); // Display the result
+        switchNumberFocus(); // Switch focus to the second number
+    }
 };
 
 // Function to initialize the calculator
@@ -146,25 +167,10 @@ const init = () => {
                 clearDisplay(); // Clear the display
             } else if (!errorFlag) {
                 // Perform operation if equals is clicked
+
                 if (operatorButton.id === "equals") {
-                    if (
-                        (number1FocusFlag && number1 === "") ||
-                        (number1FocusFlag && number2 === "")
-                    ) {
-                        if (number1 === "") display.textContent = 0;
-                        else display.textContent = number1;
-                    } else if (number2FocusFlag && number2 === "") {
-                    } else {
-                        result = operate();
-                        displayResult(); // Display the result
-                        switchNumberFocus(); // Switch focus to the second number
-                    }
-                } else if (
-                    // operations on a single number
-                    operatorButton.id === "square" ||
-                    operatorButton.id === "square-root" ||
-                    operatorButton.id === "reciprocal"
-                ) {
+                    handleEquals();
+                } else if (singleNumberOperations.includes(operatorButton.id)) {
                     operator = operatorButton.id;
                     result = operate();
                     activateOperator(operator); // Highlight the operator button
@@ -217,7 +223,12 @@ const clearError = () => {
     number2 = "";
     operator = "";
     result = "";
-    errorFlag = false;
+
+    resetFocus(); // Reset focus to the first number
+
+    errorFlag = false; // Reset error flag
+    decimalPointFlag = false; // Reset decimal point flag
+
     display.textContent = "0";
     display.classList = "";
 };
