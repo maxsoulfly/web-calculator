@@ -1,6 +1,7 @@
 const display = document.querySelector("#display"); // Get the display element
 
 const singleNumberOperations = ["square", "square-root", "reciprocal"]; // Single number operations
+const clearButtons = ["clear-entry", "clear"]; // Clear buttons
 
 const debugMode = true; // Enable or disable debug mode
 
@@ -155,45 +156,37 @@ const init = () => {
 
     // Initialize operator buttons
     const operators = document.querySelectorAll(".operator");
-
     operators.forEach((operatorButton) => {
         operatorButton.addEventListener("click", () => {
             if (debugMode) console.log("operatorButton.id", operatorButton.id); // debug mode
 
-            if (
-                operatorButton.id === "clear-entry" ||
-                operatorButton.id === "clear"
-            ) {
+            if (clearButtons.includes(operatorButton.id)) {
                 clearDisplay(); // Clear the display
             } else if (!errorFlag) {
-                // Perform operation if equals is clicked
-
                 if (operatorButton.id === "equals") {
                     handleEquals();
-                } else if (singleNumberOperations.includes(operatorButton.id)) {
+                } else if (
+                    singleNumberOperations.includes(operatorButton.id) &&
+                    number1FocusFlag
+                ) {
+                    // Handle single number operations
                     operator = operatorButton.id;
                     result = operate();
                     activateOperator(operator); // Highlight the operator button
                     displayResult(); // Display the result
                 } else {
-                    // operations on two numbers
                     if (operator === "") {
-                        // first operation
                         operator = operatorButton.id;
                     } else {
-                        // there's a chain of operations
                         result = operate();
                         displayResult(); // Display the result
                     }
-
                     switchNumberFocus(); // Switch focus to the second number
                     activateOperator(operator); // Highlight the operator button
                 }
                 helperDisplayVariables(); // Log variables for debugging
             }
         });
-
-        return operatorButton;
     });
 
     const negativeButton = document.getElementById("negative");
