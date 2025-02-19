@@ -1,37 +1,38 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family     : Arial, sans-serif;
     background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+    margin          : 0;
+    padding         : 0;
 }
 
 .container {
-    width: 100%;
-    max-width: 500px;
-    min-width: 300px;
-    margin: 50px auto;
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width        : 100%;
+    max-width    : 500px;
+    min-width    : 300px;
+    margin       : 50px auto;
+    background   : #fff;
+    padding      : 20px;
+    box-shadow   : 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 }
 
 
 h1 {
     text-align: center;
-    color: #333;
+    color     : #333;
 }
+
 button {
-    color: #333;
-    padding: 15px 20px;
-    margin: 5px;
-    border: none;
-    /* font-weight: bold; */
-    cursor: pointer;
-    font-size: 16px;
+    color           : #333;
+    padding         : 15px 20px;
+    margin          : 5px;
+    border          : none;
+    /* font-weight  : bold; */
+    cursor          : pointer;
+    font-size       : 16px;
     background-color: #f0f0f0;
-    border-radius: 4px;
-    transition: background-color 0.1s ease;
+    border-radius   : 4px;
+    transition      : background-color 0.1s ease;
 }
 
 button:hover {
@@ -52,7 +53,7 @@ button.operator.active {
 
 button#equals {
     background-color: #4caf50;
-    color: #fff;
+    color           : #fff;
 }
 
 button#equals:hover {
@@ -60,43 +61,52 @@ button#equals:hover {
 }
 
 .grid-item {
-    width: calc(100% / 5) ; /* Each item is 1/16th of the width */
-    height: calc(100% / 5); /* Keep it square */
-    box-sizing: border-box; /* Ensures border doesn't mess up sizing */
+    width     : calc(100% / 5);
+    /* Each item is 1/16th of the width */
+    height    : calc(100% / 5);
+    /* Keep it square */
+    box-sizing: border-box;
+    /* Ensures border doesn't mess up sizing */
 }
 
 input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
+    width        : 100%;
+    padding      : 10px;
+    margin       : 10px 0;
+    box-sizing   : border-box;
+    border       : 2px solid #ccc;
     border-radius: 4px;
 }
+
 #display {
-    font-family: "Agency FB", monospace;
-    display: block;
-    background-color: #e0f7fa; /* Softer color */
-    text-align: right;
-    padding: 15px;
-    font-size: 1.5rem;
-    margin: 20px 15px; /* Adjusted margin for better spacing */
-    border: 2px solid #7a7a7a; /* Unified border style */
-    border-radius: 5px; /* Rounded corners for a modern look */
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
-    overflow-x: hidden;
-    
+    font-family     : "Agency FB", monospace;
+    display         : block;
+    background-color: #e0f7fa;
+    /* Softer color */
+    text-align      : right;
+    padding         : 15px;
+    font-size       : 1.5rem;
+    margin          : 20px 15px;
+    /* Adjusted margin for better spacing */
+    border          : 2px solid #7a7a7a;
+    /* Unified border style */
+    border-radius   : 5px;
+    /* Rounded corners for a modern look */
+    box-shadow      : inset 0 0 5px rgba(0, 0, 0, 0.1);
+    /* Subtle inner shadow */
+    overflow-x      : hidden;
+
     width: 75%;
 }
 
 #display.error {
     /* font-size: 1.5rem; */
     text-align: left;
-    color: red;
+    color     : red;
 }
 
 #buttons {
-    display: flex;
+    display  : flex;
     flex-wrap: wrap;
-    padding: 15px;
+    padding  : 15px;
 }
