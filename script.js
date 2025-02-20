@@ -132,10 +132,12 @@ const isFloat = (value) => {
 
 // Function to append a number or decimal point to the current number
 const appendToNumber = (number, button) => {
+    if (number == 0) number = ""; // Remove leading zero
     if (button.textContent === ".") {
+        // Check if a decimal point has been used
         if (!decimalPointFlag) {
-            // Check if a decimal point has been used
             number += button.textContent;
+            display.textContent = number;
             toggledecimalPoint(); // Toggle decimal point
         }
     } else {
@@ -174,6 +176,22 @@ const handleOperatorClick = (operatorId) => {
     activateOperator(operator); // Highlight the operator button
 };
 
+const removeFromNumber = (number) => {
+    if (number.length > 0) number = number.slice(0, -1);
+    if (number === "") number = 0;
+    return number;
+};
+
+const handleDelete = () => {
+    if (number1FocusFlag) {
+        number1 = removeFromNumber(number1);
+        refreshDisplay(number1);
+    } else if (number2FocusFlag) {
+        number2 = removeFromNumber(number2);
+        refreshDisplay(number2);
+    }
+};
+
 // Function to initialize the calculator
 const init = () => {
     // Initialize number buttons
@@ -204,6 +222,8 @@ const init = () => {
 
             if (clearButtons.includes(operatorButton.id)) {
                 clearDisplay(); // Clear the display
+            } else if (operatorButton.id === "delete") {
+                handleDelete(); // Handle delete button
             } else if (!errorFlag) {
                 if (operatorButton.id === "equals") {
                     handleEquals();
@@ -248,6 +268,8 @@ const init = () => {
 
         helperDisplayVariables(); // Log variables for debugging
     });
+
+    const deleteButton = document.getElementById("delete");
 };
 
 // Function to display error message
