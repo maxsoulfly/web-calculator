@@ -3,7 +3,7 @@ const display = document.querySelector("#display"); // Get the display element
 const singleNumberOperations = ["square", "square-root", "reciprocal"]; // Single number operations
 const clearButtons = ["clear-entry", "clear"]; // Clear buttons
 
-const debugMode = true; // Enable or disable debug mode
+const debugMode = false; // Enable or disable debug mode
 
 let number1 = ""; // First number
 let number2 = ""; // Second number
