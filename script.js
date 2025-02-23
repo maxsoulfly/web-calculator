@@ -40,7 +40,14 @@ const negative = (num) => -parseFloat(num);
 
 // Utility functions
 const isFloat = (value) => typeof value === "number";
-const removeFromNumber = (number) => (number.length > 0 ? number.slice(0, -1) : "0");
+const removeFromNumber = (number) => {
+    if (!isNumberEmpty(number)) {
+        number = number.slice(0, -1);
+        return isNumberEmpty(number) ? "0" : number;
+    } else {
+        return "0";
+    }
+};
 const isNumberEmpty = (number) => {
     return number === "" || number === null || number === undefined || number === "0";
 }
