@@ -1,9 +1,9 @@
 const display = document.querySelector("#display"); // Get the display element
 
-const singleNumberOperations = ["square", "square-root", "reciprocal"]; // Single number operations
+const singleNumberOperations = ["square", "square-root", "reciprocal", "percent"]; // Single number operations
 const clearButtons = ["clear-entry", "clear"]; // Clear buttons
 
-const debugMode = true; // Enable or disable debug mode
+const debugMode = false; // Enable or disable debug mode
 
 let number1 = ""; // First number
 let number2 = ""; // Second number
@@ -147,7 +147,7 @@ const appendToNumber = (number, button) => {
     }
     return number;
 };
-const handleEqualsClick = () => {
+const handleEqualsButton = () => {
     if (number1FocusFlag && (isNumberEmpty(number1) || isNumberEmpty(number2))) {
         display.textContent = isNumberEmpty(number1) ? 0 : number1;
     } else {
@@ -157,7 +157,7 @@ const handleEqualsClick = () => {
         shouldResetFlag = true;
     }
 };
-const handleOperatorClick = (operatorId) => {
+const handleOperatorButton = (operatorId) => {
     if (operator === "") { // if there was no operator chosen before
         operator = operatorId; // save current operator
         activateOperator(operator); // Highlight the chosen operator button
@@ -183,7 +183,7 @@ const handleOperatorClick = (operatorId) => {
     toggleFocus(); 
     resetDecimalPoint();
 };
-const handleDeleteClick = () => {
+const handleDeleteButton = () => {
     if (number1FocusFlag) {
         number1 = removeFromNumber(number1);
         refreshDisplay(number1);
@@ -236,12 +236,12 @@ const init = () => {
             if (clearButtons.includes(operatorButton.id)) {
                 handleClearButtons(operatorButton.id);
             } else if (operatorButton.id === "delete") {
-                handleDeleteClick();
+                handleDeleteButton();
             } else if (!errorFlag) {
                 if (operatorButton.id === "equals") {
-                    handleEqualsClick();
+                    handleEqualsButton();
                 } else {
-                    handleOperatorClick(operatorButton.id);
+                    handleOperatorButton(operatorButton.id);
                 }
                 helperDisplayVariables();
             }
@@ -257,6 +257,11 @@ const init = () => {
                 result = operate(singleOperator);
                 displayResult();
             }
+            else if (singleNumberOperations.includes("percent") && number2FocusFlag){
+                number2 = (number1) * (number2 / 100);
+                refreshDisplay(number2);
+            }
+            helperDisplayVariables();
         });
     });
 
