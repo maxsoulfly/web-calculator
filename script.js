@@ -193,11 +193,10 @@ const init = () => {
     const negativeButton = document.getElementById("negative");
     negativeButton.addEventListener("click", () => {
         if (number1FocusFlag) {
-            number1 = negative(number1);
+            number1 = number1 != 0 ? negative(number1) : 0;
             refreshDisplay(number1);
-        }
-        if (number2FocusFlag) {
-            number2 = negative(number2);
+        } else if (number2FocusFlag) {
+            number2 = number2 != 0 ? negative(number2) : 0;
             refreshDisplay(number2);
         }
         helperDisplayVariables();
