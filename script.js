@@ -67,6 +67,18 @@ const displayResult = () => {
     operator = "";
 };
 const refreshDisplay = (number) => display.textContent = number;
+const clearEntry = () => {
+    if (number1FocusFlag) {
+        number1 = 0;
+        refreshDisplay(number1);
+    }
+    else {
+        number2 = 0;
+        refreshDisplay(number2);
+    }
+    
+    helperDisplayVariables();
+}
 const clearDisplay = () => {
     number1 = "";
     number2 = "";
@@ -81,6 +93,8 @@ const clearDisplay = () => {
     resetFocus();
     resetDecimalPoint();
     resetSingleOperators();
+
+    helperDisplayVariables();
 };
 
 // Focus and flag management functions
@@ -178,6 +192,13 @@ const handleDeleteClick = () => {
         refreshDisplay(number2);
     }
 };
+const handleClearButtons = (operatorID) =>{
+    if (operatorID === "clear") {
+        clearDisplay();
+    } else if (operatorID === "clear-entry") {
+        clearEntry();
+    }
+}
 const activateOperator = (operatorID) => {
     clearActiveOperators();
     const operatorButton = document.getElementById(operatorID);
@@ -213,7 +234,7 @@ const init = () => {
         operatorButton.addEventListener("click", () => {
             if (debugMode) console.log("operatorButton.id", operatorButton.id);
             if (clearButtons.includes(operatorButton.id)) {
-                clearDisplay();
+                handleClearButtons(operatorButton.id);
             } else if (operatorButton.id === "delete") {
                 handleDeleteClick();
             } else if (!errorFlag) {
