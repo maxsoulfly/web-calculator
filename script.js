@@ -124,24 +124,28 @@ const handleEqualsClick = () => {
 const handleOperatorClick = (operatorId) => {
     if (operator === "") { // if there was no operator chosen before
         operator = operatorId; // save current operator
-    } else { // there was an operator chose before
+        activateOperator(operator); // Highlight the chosen operator button
+    } else { // there was an operator chosen before
 
-        // go to calculations if we are in number 2 editing
-        if (number2FocusFlag & !isNumberEmpty(number2)) {
-            result = operate(operator); // calculate previous
-            displayResult(); // display result 
-        }
-        else { // if we're still on number 1
-
+        // Check if the second number is in focus and not empty
+        if (number2FocusFlag && !isNumberEmpty(number2)) {
+            result = operate(operator); // Calculate the result of the previous operation
+            displayResult(); // Display the result
+            toggleFocus();
+            shouldResetFlag = true;
+            operator = operatorId; // Save the current operator
+            activateOperator(operator); // Highlight the chosen operator button
+            
+        } else { // make the operator switch
+            // Visually show that an operator was chosen
+            operator = operatorId; // Save the current operator
+            activateOperator(operator); // Highlight the chosen operator button
         }
     }
 
     // switch to the other number and reset
     toggleFocus(); 
     resetDecimalPoint();
-
-    // visually show operator was chosen
-    activateOperator(operator);
 };
 const handleDeleteClick = () => {
     if (number1FocusFlag) {
