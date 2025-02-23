@@ -41,6 +41,9 @@ const negative = (num) => -parseFloat(num);
 // Utility functions
 const isFloat = (value) => typeof value === "number";
 const removeFromNumber = (number) => (number.length > 0 ? number.slice(0, -1) : "0");
+const isNumberEmpty = (number) => {
+    return number === "" || number === null || number === undefined || number === "0";
+}
 
 // Display functions
 const displayError = () => display.classList.add("error");
@@ -76,8 +79,8 @@ const resetDecimalPoint = () => decimalPointFlag = false;
 
 // Operation functions
 const operate = (operator) => {
-    if (number1 === "") number1 = 0;
-    if (number2 === "") number2 = 0;
+    if (isNumberEmpty(number1)) number1 = 0;
+    if (isNumberEmpty(number2)) number2 = 0;
 
     switch (operator) {
         case "add": return add(number1, number2);
@@ -109,8 +112,8 @@ const appendToNumber = (number, button) => {
     return number;
 };
 const handleEqualsClick = () => {
-    if ((number1FocusFlag && number1 === "") || (number1FocusFlag && number2 === "")) {
-        display.textContent = number1 === "" ? 0 : number1;
+    if (number1FocusFlag && (isNumberEmpty(number1) || isNumberEmpty(number2))) {
+        display.textContent = isNumberEmpty(number1) ? 0 : number1;
     } else {
         result = operate(operator);
         displayResult();
@@ -119,14 +122,25 @@ const handleEqualsClick = () => {
     }
 };
 const handleOperatorClick = (operatorId) => {
-    if (operator === "") {
-        operator = operatorId;
-    } else {
-        result = operate(operator);
-        displayResult();
+    if (operator === "") { // if there was no operator chosen before
+        operator = operatorId; // save current operator
+    } else { // there was an operator chose before
+
+        // go to calculations if we are in number 2 editing
+        if (number2FocusFlag & !isNumberEmpty(number2)) {
+            result = operate(operator); // calculate previous
+            displayResult(); // display result 
+        }
+        else { // if we're still on number 1
+
+        }
     }
-    toggleFocus();
+
+    // switch to the other number and reset
+    toggleFocus(); 
     resetDecimalPoint();
+
+    // visually show operator was chosen
     activateOperator(operator);
 };
 const handleDeleteClick = () => {
@@ -193,10 +207,10 @@ const init = () => {
     const negativeButton = document.getElementById("negative");
     negativeButton.addEventListener("click", () => {
         if (number1FocusFlag) {
-            number1 = number1 != 0 ? negative(number1) : 0;
+            number1 = !isNumberEmpty(number1) ? negative(number1) : 0;
             refreshDisplay(number1);
         } else if (number2FocusFlag) {
-            number2 = number2 != 0 ? negative(number2) : 0;
+            number2 = !isNumberEmpty(number2) ? negative(number2) : 0;
             refreshDisplay(number2);
         }
         helperDisplayVariables();
