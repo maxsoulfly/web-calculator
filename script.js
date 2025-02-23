@@ -67,6 +67,21 @@ const displayResult = () => {
     operator = "";
 };
 const refreshDisplay = (number) => display.textContent = number;
+const clearDisplay = () => {
+    number1 = "";
+    number2 = "";
+    operator = "";
+    singleOperator = "";
+    result = 0;
+    display.textContent = "0";
+    display.classList = "";
+    shouldResetFlag = false;
+    clearError();
+    clearActiveOperators();
+    resetFocus();
+    resetDecimalPoint();
+    resetSingleOperators();
+};
 
 // Focus and flag management functions
 const toggleFocus = () => {
@@ -163,6 +178,15 @@ const handleDeleteClick = () => {
         refreshDisplay(number2);
     }
 };
+const activateOperator = (operatorID) => {
+    clearActiveOperators();
+    const operatorButton = document.getElementById(operatorID);
+    operatorButton.classList.add("active");
+};
+const clearActiveOperators = () => {
+    const allOperators = document.querySelectorAll(".operator");
+    allOperators.forEach((operator) => operator.classList.remove("active"));
+};
 
 // Initialization function
 const init = () => {
@@ -229,30 +253,6 @@ const init = () => {
 };
 
 // Helper functions
-const activateOperator = (operatorID) => {
-    clearActiveOperators();
-    const operatorButton = document.getElementById(operatorID);
-    operatorButton.classList.add("active");
-};
-const clearActiveOperators = () => {
-    const allOperators = document.querySelectorAll(".operator");
-    allOperators.forEach((operator) => operator.classList.remove("active"));
-};
-const clearDisplay = () => {
-    number1 = "";
-    number2 = "";
-    operator = "";
-    singleOperator = "";
-    result = 0;
-    display.textContent = "0";
-    display.classList = "";
-    shouldResetFlag = false;
-    clearError();
-    clearActiveOperators();
-    resetFocus();
-    resetDecimalPoint();
-    resetSingleOperators();
-};
 const helperDisplayVariables = () => {
     if (debugMode) {
         console.log("🚀 ~ number1:", number1);
