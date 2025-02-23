@@ -17,6 +17,10 @@ This project is a web-based calculator built using JavaScript, HTML, and CSS. Th
 - **CSS**: Styling and layout
 - **JavaScript**: Functionality and interactivity
 
+
+## Live Demo
+[Click here to view the live demo](https://maxsoulfly.github.io/web-calculator/)
+
 ## Usage
 
 1. Clone the repository to your local machine:
