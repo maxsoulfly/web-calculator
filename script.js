@@ -18,28 +18,10 @@ let number1FocusFlag = true; // Flag to indicate if the first number is in focus
 let number2FocusFlag = false; // Flag to indicate if the second number is in focus
 let shouldResetFlag = false; // Flag to determine if the next input should reset the calculator state
 
-// Function to add two numbers
-const add = (num1, num2) => {
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
-    return num1 + num2;
-};
-
-// Function to subtract the second number from the first
-const subtract = (num1, num2) => {
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
-    return num1 - num2;
-};
-
-// Function to multiply two numbers
-const multiply = (num1, num2) => {
-    num1 = parseFloat(num1);
-    num2 = parseFloat(num2);
-    return num1 * num2;
-};
-
-// Function to divide the first number by the second
+// Basic arithmetic functions
+const add = (num1, num2) => parseFloat(num1) + parseFloat(num2);
+const subtract = (num1, num2) => parseFloat(num1) - parseFloat(num2);
+const multiply = (num1, num2) => parseFloat(num1) * parseFloat(num2);
 const divide = (num1, num2) => {
     num1 = parseFloat(num1);
     num2 = parseFloat(num2);
@@ -50,141 +32,103 @@ const divide = (num1, num2) => {
     return num1 / num2;
 };
 
-// Function to square a number
-const square = (num) => {
-    num = parseFloat(num);
-    return num * num;
+// Single number operations
+const square = (num) => parseFloat(num) * parseFloat(num);
+const squareRoot = (num) => Math.sqrt(parseFloat(num));
+const reciprocal = (num) => 1 / parseFloat(num);
+const negative = (num) => -parseFloat(num);
+
+// Utility functions
+const isFloat = (value) => typeof value === "number";
+const removeFromNumber = (number) => (number.length > 0 ? number.slice(0, -1) : "0");
+
+// Display functions
+const displayError = () => display.classList.add("error");
+const clearError = () => {
+    errorFlag = false;
+    display.classList.remove("error");
 };
-
-// Function to calculate the square root of a number
-const squareRoot = (num) => {
-    num = parseFloat(num);
-    return Math.sqrt(num);
+const displayResult = () => {
+    clearActiveOperators();
+    if (!isFloat(result)) displayError();
+    display.textContent = result;
+    number1 = result == 0 ? "" : result;
+    number2 = "";
+    operator = "";
 };
+const refreshDisplay = (number) => display.textContent = number;
 
-// Function to calculate the reciprocal of a number
-const reciprocal = (num) => {
-    num = parseFloat(num);
-    return 1 / num;
-};
-
-// Function to negate a number
-const negative = (num) => {
-    num = parseFloat(num);
-    return -num;
-};
-
-// Function to operate on two numbers with an operator
-const operate = (operator) => {
-    if (number1 === "") number1 = 0; // If the first number is empty, set it to 0
-    if (number2 === "") number2 = 0; // If the second number is empty, set it to 0
-
-    if (operator == "add") return add(number1, number2);
-    else if (operator == "subtract") return subtract(number1, number2);
-    else if (operator == "multiply") return multiply(number1, number2);
-    else if (operator == "divide") return divide(number1, number2);
-    else if (operator == "square") return square(number1);
-    else if (operator == "square-root") return squareRoot(number1);
-    else if (operator == "reciprocal") return reciprocal(number1);
-    else {
-        errorFlag = true;
-        return "ERROR: Wrong operation"; // Error message for invalid operation
-    }
-};
-
-// Function to toggle focus between number1 and number2
+// Focus and flag management functions
 const toggleFocus = () => {
     number1FocusFlag = !number1FocusFlag;
     number2FocusFlag = !number2FocusFlag;
-    toggleDecimalPoint(); // Toggle decimal point
-    toggleSingleOperators(); // Toggle single number operators
+    toggleDecimalPoint();
+    toggleSingleOperators();
 };
-
-// Function to reset focus to number1
 const resetFocus = () => {
     number1FocusFlag = true;
     number2FocusFlag = false;
 };
+const toggleSingleOperators = () => singleOperatorFlag = !singleOperatorFlag;
+const resetSingleOperators = () => singleOperatorFlag = false;
+const toggleDecimalPoint = () => decimalPointFlag = !decimalPointFlag;
+const resetDecimalPoint = () => decimalPointFlag = false;
 
-// Function to toggle single number operators
-const toggleSingleOperators = () => {
-    singleOperatorFlag = !singleOperatorFlag;
+// Operation functions
+const operate = (operator) => {
+    if (number1 === "") number1 = 0;
+    if (number2 === "") number2 = 0;
+
+    switch (operator) {
+        case "add": return add(number1, number2);
+        case "subtract": return subtract(number1, number2);
+        case "multiply": return multiply(number1, number2);
+        case "divide": return divide(number1, number2);
+        case "square": return square(number1);
+        case "square-root": return squareRoot(number1);
+        case "reciprocal": return reciprocal(number1);
+        default:
+            errorFlag = true;
+            return "ERROR: Wrong operation";
+    }
 };
 
-// Function to toggle single number operators
-const resetSingleOperators = () => {
-    singleOperatorFlag = false;
-};
-
-// Function to toggle decimal point button
-const toggleDecimalPoint = () => {
-    decimalPointFlag = !decimalPointFlag;
-};
-
-// Function to toggle decimal point button
-const resetDecimalPoint = () => {
-    decimalPointFlag = false;
-};
-
-// Function to check if a value is a float
-const isFloat = (value) => {
-    return typeof value === "number";
-};
-
-// Function to append a number or decimal point to the current number
+// Button click handlers
 const appendToNumber = (number, button) => {
-    if (number == 0) number = ""; // Remove leading zero
+    if (number == 0) number = "";
     if (button.textContent === ".") {
-        // Check if a decimal point has been used
         if (!decimalPointFlag) {
             number += button.textContent;
             display.textContent = number;
-            toggleDecimalPoint(); // Toggle decimal point
+            toggleDecimalPoint();
         }
     } else {
-        // Append number to the first number
         number += button.textContent;
         display.textContent = number;
     }
     return number;
 };
-
-// Function to handle the equals button click
 const handleEqualsClick = () => {
-    if (
-        (number1FocusFlag && number1 === "") ||
-        (number1FocusFlag && number2 === "")
-    ) {
-        if (number1 === "") display.textContent = 0;
-        else display.textContent = number1;
+    if ((number1FocusFlag && number1 === "") || (number1FocusFlag && number2 === "")) {
+        display.textContent = number1 === "" ? 0 : number1;
     } else {
         result = operate(operator);
-        displayResult(); // Display the result
-        toggleFocus(); // Switch focus to the first number
+        displayResult();
+        toggleFocus();
         shouldResetFlag = true;
     }
 };
-
-// Function to handle operator button click
 const handleOperatorClick = (operatorId) => {
     if (operator === "") {
         operator = operatorId;
     } else {
         result = operate(operator);
-        displayResult(); // Display the result
+        displayResult();
     }
-
-    toggleFocus(); // Switch focus to the other number
+    toggleFocus();
     resetDecimalPoint();
-    activateOperator(operator); // Highlight the operator button
+    activateOperator(operator);
 };
-
-const removeFromNumber = (number) => {
-    if (number.length > 0) number = number.slice(0, -1);
-    if (number === "") number = 0;
-    return number;
-};
-
 const handleDeleteClick = () => {
     if (number1FocusFlag) {
         number1 = removeFromNumber(number1);
@@ -195,76 +139,58 @@ const handleDeleteClick = () => {
     }
 };
 
-// Function to initialize the calculator
+// Initialization function
 const init = () => {
-    // Initialize number buttons
     const numberButtons = document.querySelectorAll(".number");
-
     numberButtons.forEach((numberButton) => {
         numberButton.addEventListener("click", () => {
             if (!errorFlag) {
-                // Append number to the appropriate variable
                 if (number1FocusFlag) {
-                    // check if it's a new operation
                     if (shouldResetFlag) {
                         clearDisplay();
                         shouldResetFlag = false;
                     }
-
                     number1 = appendToNumber(number1, numberButton);
                 } else if (number2FocusFlag) {
                     number2 = appendToNumber(number2, numberButton);
                 }
-
-                helperDisplayVariables(); // Log variables for debugging
+                helperDisplayVariables();
             }
         });
-
-        return numberButton;
     });
 
-    // Initialize operator buttons
     const operators = document.querySelectorAll(".operator");
     operators.forEach((operatorButton) => {
         operatorButton.addEventListener("click", () => {
-            if (debugMode) console.log("operatorButton.id", operatorButton.id); // debug mode
-
+            if (debugMode) console.log("operatorButton.id", operatorButton.id);
             if (clearButtons.includes(operatorButton.id)) {
-                clearDisplay(); // Clear the display
+                clearDisplay();
             } else if (operatorButton.id === "delete") {
-                handleDeleteClick(); // Handle delete button
+                handleDeleteClick();
             } else if (!errorFlag) {
                 if (operatorButton.id === "equals") {
                     handleEqualsClick();
                 } else {
                     handleOperatorClick(operatorButton.id);
                 }
-                helperDisplayVariables(); // Log variables for debugging
+                helperDisplayVariables();
             }
         });
     });
 
-    // Initialize single operator buttons
     const singleOperators = document.querySelectorAll(".single-operator");
     singleOperators.forEach((operatorButton) => {
         operatorButton.addEventListener("click", () => {
-            if (debugMode) console.log("operatorButton.id", operatorButton.id); // debug mode
-
-            if (
-                singleNumberOperations.includes(operatorButton.id) &&
-                number1FocusFlag
-            ) {
-                // Handle single number operations
+            if (debugMode) console.log("operatorButton.id", operatorButton.id);
+            if (singleNumberOperations.includes(operatorButton.id) && number1FocusFlag) {
                 singleOperator = operatorButton.id;
                 result = operate(singleOperator);
-                displayResult(); // Display the result
+                displayResult();
             }
         });
     });
 
-    // Initialize negative button
     const negativeButton = document.getElementById("negative");
-
     negativeButton.addEventListener("click", () => {
         if (number1FocusFlag) {
             number1 = negative(number1);
@@ -274,52 +200,20 @@ const init = () => {
             number2 = negative(number2);
             refreshDisplay(number2);
         }
-
-        helperDisplayVariables(); // Log variables for debugging
+        helperDisplayVariables();
     });
 };
 
-// Function to display error message
-const displayError = () => {
-    display.classList.add("error");
-};
-
-// Function to clear error and reset variables
-const clearError = () => {
-    errorFlag = false; // Reset error flag
-    display.classList.remove("error");
-};
-
-// Function to display the result
-const displayResult = () => {
-    clearActiveOperators(); // Clear active operator buttons
-    if (!isFloat(result)) displayError(); // Display error if result is not a float
-    display.textContent = result;
-    if (result == 0) number1 = ""; // Set the first number to empty
-    else number1 = result; // Set the result as the first number for the next operation
-    number2 = "";
-    operator = "";
-};
-
-// Function to refresh the display with the current number
-const refreshDisplay = (number) => {
-    display.textContent = number;
-};
-
-// Function to highlight the active operator button
+// Helper functions
 const activateOperator = (operatorID) => {
-    clearActiveOperators(); // Clear active operator buttons
+    clearActiveOperators();
     const operatorButton = document.getElementById(operatorID);
     operatorButton.classList.add("active");
 };
-
-// Function to clear active operator buttons
 const clearActiveOperators = () => {
     const allOperators = document.querySelectorAll(".operator");
     allOperators.forEach((operator) => operator.classList.remove("active"));
 };
-
-// Function to clear the display and reset variables
 const clearDisplay = () => {
     number1 = "";
     number2 = "";
@@ -328,21 +222,13 @@ const clearDisplay = () => {
     result = 0;
     display.textContent = "0";
     display.classList = "";
-
-    clearError(); // Clear error
-    clearActiveOperators(); // Clear active operator buttons
-
-    resetFocus(); // Reset focus to the first number
-    resetDecimalPoint(); // Reset decimal point
-    resetSingleOperators(); // Reset single number operators
+    shouldResetFlag = false;
+    clearError();
+    clearActiveOperators();
+    resetFocus();
+    resetDecimalPoint();
+    resetSingleOperators();
 };
-
-// Function to clear the last entry
-const clearEntry = () => {
-    clearError(); // Clear error
-};
-
-// Helper function to log variables for debugging
 const helperDisplayVariables = () => {
     if (debugMode) {
         console.log("🚀 ~ number1:", number1);
