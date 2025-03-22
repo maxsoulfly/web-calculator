@@ -192,10 +192,10 @@ const Calculator = (function () {
     const appendToNumber = (number, button) => {
         if (number == 0) number = "";
         if (button.textContent === ".") {
-            if (!decimalPointFlag) {
+            if (!state.getFlag("decimalPoint")) {
                 number += button.textContent;
                 display.textContent = number;
-                toggleDecimalPoint();
+                toggleFlag("decimalPoint");
             }
         } else {
             number += button.textContent;
@@ -241,7 +241,6 @@ const Calculator = (function () {
 
     const handleDeleteButton = () => {
         const isNumber1 = state.getFlag("number1Focus");
-
         const get = isNumber1 ? state.getNumber1 : state.getNumber2;
         const set = isNumber1 ? state.setNumber1 : state.setNumber2;
 
