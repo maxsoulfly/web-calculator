@@ -51,20 +51,6 @@ const Calculator = (function () {
     };
 
     const state = createCalculatorState();
-    /*
-        let number1 = ""; // First number
-        let number2 = ""; // Second number
-        let operator = ""; // Operator for two-number operations
-        let singleOperator = ""; // Operator for single-number operations
-        let result = 0; // This will store the answer
-
-        let singleOperatorFlag = false; // Flag to indicate if a single operator is in use
-        let errorFlag = false; // Flag to indicate if there is an error
-        let decimalPointFlag = false; // Flag to indicate if a decimal point has been used
-        let number1FocusFlag = true; // Flag to indicate if the first number is in focus
-        let number2FocusFlag = false; // Flag to indicate if the second number is in focus
-        let shouldResetFlag = false; // Flag to determine if the next input should reset the calculator state
-    */
 
     // Basic arithmetic functions
     const add = (num1, num2) => parseFloat(num1) + parseFloat(num2);
@@ -112,11 +98,12 @@ const Calculator = (function () {
         display.classList.remove("error");
     };
     const displayResult = () => {
+        const result = state.getResult();
         clearActiveOperators();
         if (!isFloat(result)) displayError();
-        display.textContent = state.getResult();
+        display.textContent = result;
 
-        state.setNumber1(state.getResult() == 0 ? "" : state.getResult());
+        state.setNumber1(result == 0 ? "" : result);
         state.setNumber2("");
         state.setOperator("");
     };
@@ -227,7 +214,8 @@ const Calculator = (function () {
         ) {
             display.textContent = isNumberEmpty(num1) ? 0 : num1;
         } else {
-            result = operate(state.getOperator());
+            const result = operate(state.getOperator());
+            state.setResult(result);
             displayResult();
             toggleFocus();
             state.setFlag("shouldReset", true);
@@ -301,45 +289,44 @@ const Calculator = (function () {
                     helperDisplayVariables();
                 }
             });
-
+        });
         const operators = document.querySelectorAll(".operator");
         operators.forEach((operatorButton) => {
             operatorButton.addEventListener("click", () => {
-            if (debugMode) console.log("operatorButton.id", operatorButton.id);
-            if (clearButtons.includes(operatorButton.id)) {
-                handleClearButtons(operatorButton.id);
-            } else if (operatorButton.id === "delete") {
-                handleDeleteButton();
-            } else if (!state.getFlag("error")) {
-                if (operatorButton.id === "equals") {
-                handleEqualsButton();
-                } else {
-                handleOperatorButton(operatorButton.id);
+                if (debugMode)
+                    console.log("operatorButton.id", operatorButton.id);
+                if (clearButtons.includes(operatorButton.id)) {
+                    handleClearButtons(operatorButton.id);
+                } else if (operatorButton.id === "delete") {
+                    handleDeleteButton();
+                } else if (!state.getFlag("error")) {
+                    if (operatorButton.id === "equals") {
+                        handleEqualsButton();
+                    } else {
+                        handleOperatorButton(operatorButton.id);
+                    }
+                    helperDisplayVariables();
                 }
-                helperDisplayVariables();
-            }
             });
         });
 
         const singleOperators = document.querySelectorAll(".single-operator");
         singleOperators.forEach((operatorButton) => {
             operatorButton.addEventListener("click", () => {
-            if (debugMode)
-                console.log("operatorButton.id", operatorButton.id);
-            if (singleNumberOperations.includes(operatorButton.id)) {
-                
-                state.setSingleOperator(operatorButton.id);
-                let result = operate(state.getSingleOperator());
-                state.setResult(result);
-                displayResult();
-            }
-            helperDisplayVariables();
+                if (debugMode)
+                    console.log("operatorButton.id", operatorButton.id);
+                if (singleNumberOperations.includes(operatorButton.id)) {
+                    state.setSingleOperator(operatorButton.id);
+                    let result = operate(state.getSingleOperator());
+                    state.setResult(result);
+                    displayResult();
+                }
+                helperDisplayVariables();
             });
         });
 
         const negativeButton = document.getElementById("negative");
         negativeButton.addEventListener("click", () => {
-
             const isNumber1 = state.getFlag("number1Focus");
             const get = isNumber1 ? state.getNumber1 : state.getNumber2;
             const set = isNumber1 ? state.setNumber1 : state.setNumber2;
@@ -351,7 +338,7 @@ const Calculator = (function () {
 
             helperDisplayVariables();
         });
-    }); 
+    };
 
     // Helper functions
     const helperDisplayVariables = () => {
