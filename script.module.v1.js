@@ -47,6 +47,22 @@ const Calculator = (function () {
 			// flags
 			getFlag: (key) => flags[key],
 			setFlag: (key, value) => (flags[key] = value),
+
+			reset: () => {
+				number1 = "";
+				number2 = "";
+				operator = "";
+				singleOperator = "";
+				result = 0;
+				flags = {
+					singleOperator: false,
+					error: false,
+					decimalPoint: false,
+					number1Focus: true,
+					number2Focus: false,
+					shouldReset: false,
+				};
+			},
 		};
 	};
 
@@ -121,21 +137,10 @@ const Calculator = (function () {
 	};
 
 	const clearDisplay = () => {
-		state.setNumber1("");
-		state.setNumber2("");
-		state.setOperator("");
-		state.setSingleOperator("");
-		state.setResult(0);
-
+		state.reset();
 		display.textContent = "0";
 		display.classList = "";
-
-		state.setFlag("shouldReset", false);
-		clearError();
 		clearActiveOperators();
-		resetFocus();
-		resetDecimalPoint();
-		resetSingleOperators();
 		helperDisplayVariables();
 	};
 
@@ -147,11 +152,7 @@ const Calculator = (function () {
 		toggleFlag("decimalPoint");
 		toggleFlag("singleOperator");
 	};
-	const resetFocus = () => {
-		state.setFlag("number1Focus", true);
-		state.setFlag("number2Focus", false);
-	};
-	const resetSingleOperators = () => state.setFlag("singleOperator", false);
+
 	const resetDecimalPoint = () => state.setFlag("decimalPoint", false);
 
 	// Operation functions
