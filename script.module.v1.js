@@ -27,6 +27,8 @@ const Calculator = (function () {
 			shouldReset: false, // Flag to determine if the next input should reset the calculator state
 		};
 
+		// Public API of calculator state manager
+		// Provides controlled access to internal variables and flags
 		return {
 			// operators
 			getNumber1: () => number1,
@@ -48,6 +50,7 @@ const Calculator = (function () {
 			getFlag: (key) => flags[key],
 			setFlag: (key, value) => (flags[key] = value),
 
+			// Resets all calculator state and flags to initial values
 			reset: () => {
 				number1 = "";
 				number2 = "";
@@ -266,6 +269,7 @@ const Calculator = (function () {
 		allOperators.forEach((operator) => operator.classList.remove("active"));
 	};
 
+	// Returns the correct getter/setter functions depending on which number is in focus
 	const getActiveNumberHandlers = () => {
 		const isNumber1 = state.getFlag("number1Focus");
 		return {
@@ -276,6 +280,7 @@ const Calculator = (function () {
 
 	// Initialization function
 	const init = () => {
+		// Handle number button clicks
 		const numberButtons = document.querySelectorAll(".number");
 		numberButtons.forEach((numberButton) => {
 			numberButton.addEventListener("click", () => {
@@ -297,6 +302,8 @@ const Calculator = (function () {
 				helperDisplayVariables();
 			});
 		});
+
+		// Handle operator button clicks
 		const operators = document.querySelectorAll(".operator");
 		operators.forEach((operatorButton) => {
 			operatorButton.addEventListener("click", () => {
@@ -317,6 +324,7 @@ const Calculator = (function () {
 			});
 		});
 
+		// Handle single number operator buttons
 		const singleOperators = document.querySelectorAll(".single-operator");
 		singleOperators.forEach((operatorButton) => {
 			operatorButton.addEventListener("click", () => {
@@ -332,6 +340,7 @@ const Calculator = (function () {
 			});
 		});
 
+		// Handle +/- toggle
 		const negativeButton = document.getElementById("negative");
 		negativeButton.addEventListener("click", () => {
 			const { get, set } = getActiveNumberHandlers();
